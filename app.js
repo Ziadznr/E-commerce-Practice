@@ -33,7 +33,7 @@ app.use(limiter)
 // Mongodb Database Connection
 async function connectDB() {
     try {
-        await mongoose.connect('mongodb://localhost:27017/ToDo', {
+        await mongoose.connect('mongodb://localhost:27017/MernEcommerce', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             autoIndex: true
