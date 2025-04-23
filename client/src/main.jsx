@@ -1,10 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+        // your custom styles
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap';
+import './assets/css/style.css'
+import './assets/css/animate.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+import App from './App.jsx';
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
-)
+  </React.StrictMode>
+);

@@ -52,9 +52,9 @@ app.use('/api/v1', router)
 
 app.use(express.static('client/dist'))
 
-//Undefined route
-app.use('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
+//Add rect Front End Routing
+app.get('*', function(req, res) {
+    res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
 })
 
 module.exports = app;
