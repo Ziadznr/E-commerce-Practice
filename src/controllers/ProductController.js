@@ -7,6 +7,7 @@ const {
     ListBySimilarService,
     ListByKeywordService,
     ListByRemarkService,
+    ListByFilterService,
     DetailsService,
     ReviewListService,
     CreateReviewService
@@ -43,6 +44,7 @@ exports.ProductListBySimilar = async(req, res) => {
     return res.status(200).json(result)
 
 }
+
 exports.ProductListByKeyword = async(req, res) => {
     let result = await ListByKeywordService(req);
     return res.status(200).json(result)
@@ -53,6 +55,13 @@ exports.ProductListByRemark = async(req, res) => {
     return res.status(200).json(result)
 
 }
+
+exports.ProductListByFilter = async(req, res) => {
+    let result = await ListByFilterService(req);
+    return res.status(200).json(result)
+
+}
+
 exports.ProductDetails = async(req, res) => {
     let result = await DetailsService(req);
     return res.status(200).json(result)

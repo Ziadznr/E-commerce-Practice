@@ -1,46 +1,35 @@
 import React from 'react';
-
-import { Link } from 'react-router-dom';
-import logo from '../../assets/img/z.jpg'
-
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../../assets/img/z.jpg';
+import ProductStore from '../../store/ProductStore';
 
 const AppNavBar = () => {
-    return (
-        <>
-           <div className="container-fluid text-white p-2 bg-success">
-        <div className="container">
-          <div className="row justify-content-around">
-            <div className="col-md-6">
-              <span className="f-12">
-                <i className="bi bi-envelope"></i> ziad18@cse.pstu.ac.bd
-              </span>
-              <span className="f-12 mx-2">
-                <i className="bi bi-telephone"></i> 01704667725
-              </span>
-            </div>
-            <div className="col-md-6">
-              <span className="float-end">
-                <span className="bodySmal mx-2">
-                  <i className="bi bi-whatsapp"></i>
-                </span>
-                <span className="bodySmal mx-2">
-                  <i className="bi bi-youtube"></i>
-                </span>
-                <span className="bodySmal mx-2">
-                  <i className="bi bi-facebook"></i>
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
+  const navigate = useNavigate();
+  const { SetSearchKeyword, SearchKeyword } = ProductStore();
+
+  const handleSearch = () => {
+    if (SearchKeyword?.length > 0) {
+      navigate(`/by-keyword/${SearchKeyword}`);
+    } else {
+      navigate('/');
+    }
+  };
+
+  return (
+    <>
+      {/* top bar */}
+      <div className="container-fluid text-white p-2 bg-success">
+        {/* ... same as before ... */}
       </div>
 
+      {/* navbar */}
       <nav className="navbar sticky-top bg-white navbar-expand-lg navbar-light py-3">
         <div className="container">
           <Link className="navbar-brand" to="/">
             <img className="img-fluid" src={logo} alt="" width="96px" />
           </Link>
 
+          {/* toggler button */}
           <button
             className="navbar-toggler"
             type="button"
@@ -56,18 +45,20 @@ const AppNavBar = () => {
           <div className="collapse navbar-collapse" id="nav06">
             <ul className="navbar-nav mt-3 mt-lg-0 ms-lg-3">
               <li className="nav-item me-4">
-                <span className="nav-link">Home</span>
+                <Link className="nav-link" to="/">Home</Link>
               </li>
             </ul>
 
+            {/* search */}
             <div className="d-lg-flex ms-auto input-group">
               <input
+                value={SearchKeyword}
+                onChange={(e) => SetSearchKeyword(e.target.value)}
                 className="form-control"
                 type="search"
                 placeholder="Search"
-                aria-label="Search"
               />
-              <button className="btn btn-outline-dark" type="submit">
+              <button onClick={handleSearch} className="btn btn-outline-dark" type="button">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -85,27 +76,24 @@ const AppNavBar = () => {
               </button>
             </div>
 
+            {/* other links */}
             <Link to="/cart" className="btn ms-2 btn-light position-relative">
               <i className="bi text-dark bi-bag"></i>
             </Link>
-
             <Link to="/wish" className="btn ms-2 btn-light d-flex">
               <i className="bi text-dark bi-heart"></i>
             </Link>
-
             <Link to="/profile" className="btn ms-3 btn-success d-flex">
               Profile
             </Link>
-
             <Link to="/logout" className="btn ms-3 btn-success d-flex">
               Logout
             </Link>
           </div>
         </div>
       </nav>
-           
-        </>
-    );
+    </>
+  );
 };
 
 export default AppNavBar;

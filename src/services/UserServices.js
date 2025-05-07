@@ -73,6 +73,15 @@ const ReadProfileService = async(req) => {
 
 }
 
+const LogoutService = async(req) => {
+    try {
+        // No need to do much here unless you're blacklisting tokens or clearing sessions
+        return { status: 'success', message: "Logout successful" }
+    } catch (error) {
+        return { status: 'fail', message: "Logout failed" }
+    }
+}
+
 module.exports = {
     UserOTPService,
     VerifyOTPService,

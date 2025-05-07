@@ -238,6 +238,78 @@ const CreateReviewService = async(req) => {
     }
 }
 
+const ListByFilterService = async(req) => {
+
+    try {
+
+        let matchConditions = {};
+
+        if (req.body['categoryId']) {
+            matchConditions.categoryId = new ObjectID(req.body['categoryId'])
+        }
+
+        if (req.body['brandId']) {
+            matchConditions.brandId = new ObjectID(req.body['brandId'])
+        }
+
+        let MatchStage = {
+            $match: matchConditions
+        }
+
+        let AddFieldsStage = {
+            $addFields: { numericPrice: { $toInt: "$price" } }
+        }
+
+        let priceMin = parseInt(req.body['priceMin']);
+        let priceMax = parseInt(req.body['priceMax']);
+        let PriceMatchConditions = {}
+
+        if (!isNaN(priceMin)) {
+            PriceMatchConditions['numericPrice'] = { $gte: priceMin }
+        }
+
+        if (!isNaN(priceMax)) {
+            PriceMatchConditions['numericPrice'] = {...(PriceMatchConditions['numericPrice'] || {}), $lte: priceMax }
+        }
+        let PriceMatchStage = { $match: PriceMatchConditions }
+
+        let JoinWithBrandStage = {
+            $lookup: {
+                from: 'brands',
+                localField: 'brandId',
+                foreignField: '_id',
+                as: "brand"
+
+            }
+        };
+        let JoinWithCategoryStage = {
+            $lookup: {
+                from: 'categories',
+                localField: 'categoryId',
+                foreignField: '_id',
+                as: "category"
+
+            }
+
+        };
+        let UnwindBrandStage = { $unwind: "$brand" };
+        let UnwindCategoryStage = { $unwind: "$category" };
+        let ProjectionStage = { $project: { 'brand._id': 0, 'category_id': 0, 'categoryId': 0, 'brandId': 0 } }
+
+        let data = await ProductModel.aggregate([
+            MatchStage,
+            AddFieldsStage,
+            PriceMatchStage,
+            JoinWithBrandStage, JoinWithCategoryStage,
+            UnwindBrandStage, UnwindCategoryStage, ProjectionStage
+        ])
+        return { status: "success", data: data }
+    } catch (error) {
+        return { status: "fail", data: error }.toString()
+
+    }
+}
+
 
 module.exports = {
     BrandListService,
@@ -248,6 +320,7 @@ module.exports = {
     ListBySimilarService,
     ListByKeywordService,
     ListByRemarkService,
+    ListByFilterService,
     DetailsService,
     ReviewListService,
     CreateReviewService
