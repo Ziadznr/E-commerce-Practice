@@ -13,10 +13,11 @@ const DetailsSkeleton = () => {
                             <div className=' row'>
                                 <div className=' col-12'>
                                     {
-                                        Array.from({length:10}).map(()=>{
+                                        // Add key prop to each skeleton in this map
+                                        Array.from({length: 10}).map((_, index) => {
                                             return (
-                                                <Skeleton count={1}/>
-                                            )
+                                                <Skeleton key={index} count={1}/>  // Added key prop here
+                                            );
                                         })
                                     }
                                 </div>
@@ -37,16 +38,16 @@ const DetailsSkeleton = () => {
                     </div>
                     <div className=' col-md-5 p-1'>
                                     {
-                                        Array.from({length:16}).map(()=>{
+                                        // Add key prop to each skeleton in this map as well
+                                        Array.from({length: 16}).map((_, index) => {
                                             return (
-                                                <Skeleton count={1}/>
-                                            )
+                                                <Skeleton key={index} count={1}/>  // Added key prop here as well
+                                            );
                                         })
                                     }
                     </div>
                 </div>
             </div>
-            
         </div>
     );
 };

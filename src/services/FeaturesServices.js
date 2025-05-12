@@ -1,7 +1,7 @@
 const FeaturesModel = require("../models/FeaturesModel")
 const LegalModel = require("../models/LegalModel")
 
-const FeaturesListService = async() => {
+const FeaturesListService = async(req) => {
 
     try {
         let data = await FeaturesModel.find()
@@ -11,7 +11,7 @@ const FeaturesListService = async() => {
     }
 }
 
-const LegalDetailsService = async() => {
+const LegalDetailsService = async(req) => {
 
     try {
         let type = req.params.type;

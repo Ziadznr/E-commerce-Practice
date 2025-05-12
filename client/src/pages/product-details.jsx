@@ -12,13 +12,15 @@ const ProductDetails = () => {
 
 
     useEffect(() => {
-        
-        return async() => {
-            await DetailsRequest(id);
-            await ReviewListRequest(id);
-            BrandList===null ? await BrandListRequest():null
-        };
-    }, []);
+    (async () => {
+        await DetailsRequest(id);
+        await ReviewListRequest(id);
+        if (BrandList === null) {
+            await BrandListRequest();
+        }
+    })();
+}, [id]);
+
     return (
        <Layout>
         <Details/>

@@ -21,30 +21,29 @@ const UserOTPService = async(req) => {
 
 const VerifyOTPService = async(req) => {
     try {
-        let email = req.params.email;
-        let otp = req.params.otp;
+        const email = req.params.email.toLowerCase(); // normalise case!
+        const otp = req.params.otp; // keep as string
 
-        // User Count
-        let total = await UserModel.find({ email: email, otp: otp }).count("total")
+        // 1️⃣  Find the user document in one shot
+        const user = await UserModel.findOne({ email, otp });
 
-        if (total == 1) {
-
-            // User ID Read
-            let user_id = await UserModel.find({ email: email, otp: otp }).count("_id");
-
-            // User token create
-            let token = await EncodeToken(email, user_id[0]['_id'].toString())
-
-            // OTP code update to zero
-            await UserModel.updateOne({ email: email }, { $set: { otp: '0' } })
-            return { status: 'success', message: "Valid OTP", token: token }
-        } else {
-            return { status: 'fail', message: "Invalid OTP" }
+        if (!user) {
+            return { status: 'fail', message: 'Invalid OTP' };
         }
-    } catch (error) {
-        return { status: 'fail', message: "Something Went Wrong" }
+
+        // 2️⃣  Build the JWT
+        const token = await EncodeToken(user.email, user._id.toString());
+
+        // 3️⃣  Invalidate the OTP
+        await UserModel.updateOne({ _id: user._id }, { $set: { otp: '0' } });
+
+        return { status: 'success', message: 'Valid OTP', token };
+    } catch (err) {
+        console.error(err);
+        return { status: 'fail', message: 'Something Went Wrong' };
     }
-}
+};
+
 
 // Logout can possible only controller use
 

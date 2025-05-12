@@ -40,11 +40,11 @@ const ProductStore = create((set) => ({
         }
     },
     ListByRemark: null,
-    ListByRemarkRequest: async(Remark) => {
+    ListByRemarkRequest: async(remark) => {
 
         set({ ListByRemark: null })
 
-        let res = await axios.get(`/api/v1/ProductListByRemark/${Remark}`);
+        let res = await axios.get(`/api/v1/ProductListByRemark/${remark}`);
         if (res.data['status'] === "success") {
             set({
                 ListByRemark: res.data['data']
@@ -54,11 +54,11 @@ const ProductStore = create((set) => ({
     },
 
     ListProduct: null,
-    ListByBrandRequest: async(BrandID) => {
+    ListByBrandRequest: async(brandId) => {
 
         set({ ListProduct: null })
 
-        let res = await axios.get(`/api/v1/ProductListByBrand/${BrandID}`);
+        let res = await axios.get(`/api/v1/ProductListByBrand/${brandId}`);
         if (res.data['status'] === "success") {
             set({
                 ListProduct: res.data['data']
@@ -68,11 +68,11 @@ const ProductStore = create((set) => ({
     },
 
 
-    ListByCategoryRequest: async(CategoryID) => {
+    ListByCategoryRequest: async(categoryId) => {
 
         set({ ListProduct: null })
 
-        let res = await axios.get(`/api/v1/ProductListByCategory/${CategoryID}`);
+        let res = await axios.get(`/api/v1/ProductListByCategory/${categoryId}`);
         if (res.data['status'] === "success") {
             set({
                 ListProduct: res.data['data']
@@ -81,11 +81,11 @@ const ProductStore = create((set) => ({
         }
     },
 
-    ListByKeywordRequest: async(Keyword) => {
+    ListByKeywordRequest: async(keyword) => {
 
         set({ ListProduct: null })
 
-        let res = await axios.get(`/api/v1/ProductListByKeyword/${Keyword}`);
+        let res = await axios.get(`/api/v1/ProductListByKeyword/${keyword}`);
         if (res.data['status'] === "success") {
             set({
                 ListProduct: res.data['data']
@@ -114,15 +114,16 @@ const ProductStore = create((set) => ({
 
     Details: null,
     DetailsRequest: async(id) => {
-
-        set({ Details: null })
+        console.log("Fetching details for ID:", id); // ✅ ADD THIS
+        set({ Details: null });
 
         let res = await axios.get(`/api/v1/ProductDetails/${id}`);
+        console.log("Details API response:", res.data); // ✅ ADD THIS
+
         if (res.data['status'] === "success") {
             set({
                 Details: res.data['data']
-
-            })
+            });
         }
     },
 
