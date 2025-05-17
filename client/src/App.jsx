@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/home-page';
 import ProductByBrand from './pages/product-by-brand';
 import ProductByCategory from './pages/product-by-category';
@@ -19,12 +20,15 @@ import ProfileForm from './components/user/profile-form';
 import ProfilePage from './pages/profile-page';
 import CartPage from './pages/cart-page';
 import WishPage from './pages/wish-page';
+import OrderPage from './pages/order-page';
+import InvoiceDetails from './components/invoice/invoice-details';
 
 const App = () => {
  // call it to get actual status
 
   return (
     <BrowserRouter>
+    <Toaster position="top-right" reverseOrder={false} toastOptions={{ duration: 3000 }} />
       <Routes>
        <Route
   path="/"
@@ -53,6 +57,8 @@ const App = () => {
 
         <Route path="/cart" element={<CartPage />} />
         <Route path="/wish" element={<WishPage/>} />
+        <Route path="/invoice/:id" element={<InvoiceDetails />} />
+        <Route path="/orders" element={<OrderPage/>} />
       </Routes>
     </BrowserRouter>
   );

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import CartStore from '../../store/CartStore';
 import ProductsSkeleton from '../../skeleton/products-skeleton';
 import NoData from './../layout/no-data';
+import { Link } from 'react-router-dom';
 
 const InvoiceList = () => {
     const {InvoiceList,InvoiceListRequest}=CartStore();
@@ -28,7 +29,7 @@ const InvoiceList = () => {
                             {
                                 InvoiceList.map((item)=>{
                                     return(
-                                        <li className=' list-group-item d-flex justify-content-between align-items-center'>
+                                        <li key={item._id}  className=' list-group-item d-flex justify-content-between align-items-center'>
                                             <div className=' ms-2 me-auto'>
                                                 <div>
                                                     <p className=' m-1'><b>Invoice No:</b> {item['tran_id']}</p>

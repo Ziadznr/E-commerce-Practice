@@ -7,17 +7,19 @@ exports.CreateInvoice = async(req, res) => {
 
 exports.PaymentSuccess = async(req, res) => {
     let result = await PaymentSuccessService(req);
-    return res.redirect('/orders')
-}
+    // Redirect to the frontend (React app) running on port 5173
+    return res.redirect('http://localhost:5173/orders');
+};
+
 
 exports.PaymentFail = async(req, res) => {
     let result = await PaymentFailService(req);
-    return res.redirect('/orders')
+    return res.redirect('http://localhost:5173/orders');
 }
 
 exports.PaymentCancel = async(req, res) => {
     let result = await PaymentCancelService(req);
-    return res.redirect('/orders')
+    return res.redirect('http://localhost:5173/orders');
 }
 
 exports.PaymentIPN = async(req, res) => {

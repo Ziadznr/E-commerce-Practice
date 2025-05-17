@@ -124,16 +124,15 @@ const CartStore = create((set) => ({
     },
 
     InvoiceDetails: null,
-    InvoiceDetailsRequest: async() => {
+    InvoiceDetailsRequest: async(id) => {
         try {
-            let res = await axios.get(`/api/v1/InvoiceProductList`, {
+            let res = await axios.get(`/api/v1/InvoiceProductList/${id}`, {
                 withCredentials: true, // For cookies
                 headers: {
                     'Authorization': `Bearer ${Cookies.get('token')}` // If token is in cookies
                 }
-
             });
-            set({ InvoiceList: res.data['data'] })
+            set({ InvoiceDetails: res.data['data'] })
         } catch (error) {
             unauthorized(error.response.status)
         }
