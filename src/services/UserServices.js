@@ -64,15 +64,24 @@ const SaveProfileService = async(req) => {
 const ReadProfileService = async(req) => {
     try {
         let user_id = req.headers.user_id;
-        await ProfileModel.find({ userId: user_id })
-        return { status: 'success', message: "Profile Save Success" }
+        let result = await ProfileModel.find({ userId: user_id });
+
+        return {
+            status: 'success',
+            message: 'Profile read success',
+            data: result
+        };
     } catch (error) {
-        return { status: 'fail', message: "Something Went Wrong" }
+        console.error("ReadProfileService error:", error);
+        return {
+            status: 'fail',
+            message: 'Something went wrong'
+        };
     }
+};
 
-}
 
-const LogoutService = async(req) => {
+const LogoutService = async() => {
     try {
         // No need to do much here unless you're blacklisting tokens or clearing sessions
         return { status: 'success', message: "Logout successful" }

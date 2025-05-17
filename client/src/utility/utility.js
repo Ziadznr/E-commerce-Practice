@@ -1,8 +1,8 @@
 import Swal from 'sweetalert2';
 
 // Handle HTTP error code (like 481)
-export function handleErrorCode(code) {
-    if (code === 481) {
+export function unauthorized(code) {
+    if (code === 401) {
         sessionStorage.clear();
         localStorage.clear();
         window.location.href = '/login';
@@ -20,7 +20,7 @@ export function getEmail() {
 }
 
 // Format timestamp to "dd Mon yyyy"
-export function formatDate(timestamp) {
+export function TimestampToDate(timestamp) {
     let date = new Date(timestamp);
     const monthName = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return date.getDate() + " " + monthName[date.getMonth()] + ' ' + date.getFullYear();

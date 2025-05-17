@@ -1,5 +1,4 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import HomePage from './pages/home-page';
 import ProductByBrand from './pages/product-by-brand';
 import ProductByCategory from './pages/product-by-category';
@@ -14,15 +13,30 @@ import ContactPage from './pages/contact-page';
 import ComplainPage from './pages/complain-page';
 import LoginPage from './pages/login-page';
 import OtpPage from './pages/otp-page';
+import UserStore from './store/UserStore';
+import PrivateRoute from './components/PrivateRoute';
+import ProfileForm from './components/user/profile-form';
+import ProfilePage from './pages/profile-page';
+import CartPage from './pages/cart-page';
+import WishPage from './pages/wish-page';
 
 const App = () => {
+ // call it to get actual status
+
   return (
-   <BrowserRouter>
+    <BrowserRouter>
       <Routes>
-        <Route path='/' element={<HomePage/>}/>
-        <Route path='/by-brand/:id' element={<ProductByBrand/>}/>
-        <Route path='/by-category/:id' element={<ProductByCategory/>}/>
-        <Route path='/by-keyword/:keyword' element={<ProductByKeyword/>}/>
+       <Route
+  path="/"
+  element={
+    <PrivateRoute>
+      <HomePage />
+    </PrivateRoute>
+  }
+/>
+        <Route path="/by-brand/:id" element={<ProductByBrand />} />
+        <Route path="/by-category/:id" element={<ProductByCategory />} />
+        <Route path="/by-keyword/:keyword" element={<ProductByKeyword />} />
         <Route path="/details/:id" element={<ProductDetails />} />
 
         <Route path="/about" element={<AboutPage />} />
@@ -35,8 +49,12 @@ const App = () => {
 
         <Route path="/login" element={<LoginPage />} />
         <Route path="/otp" element={<OtpPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/wish" element={<WishPage/>} />
       </Routes>
-   </BrowserRouter>
+    </BrowserRouter>
   );
 };
 

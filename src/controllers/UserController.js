@@ -11,7 +11,7 @@ exports.UserOTP = async(req, res) => {
 exports.VerifyOTP = async(req, res) => {
     let result = await VerifyOTPService(req)
 
-    if (result['status'] == 'success') {
+    if (result['status'] === 'success') {
 
         // Cookies Option
         let cookieOption = {
@@ -50,7 +50,6 @@ exports.UpdateProfile = async(req, res) => {
 
 }
 exports.ReadProfile = async(req, res) => {
-    let result = await ReadProfileService(req)
-    return res.status(200).json(result)
-
-}
+    let result = await ReadProfileService(req);
+    return res.status(200).json(result);
+};

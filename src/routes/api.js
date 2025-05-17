@@ -26,7 +26,9 @@ router.post("/ProductListByFilter", ProductController.ProductListByFilter)
 // User 
 router.get("/UserOTP/:email", UserController.UserOTP)
 router.get("/VerifyOTP/:email/:otp", UserController.VerifyOTP)
-router.get("/UserLogout", AuthVerification, UserController.UserLogout)
+router.get("/UserLogout", UserController.UserLogout);
+
+
 
 router.post("/CreateProfile", AuthVerification, UserController.CreateProfile)
 router.post("/UpdateProfile", AuthVerification, UserController.UpdateProfile)
@@ -38,13 +40,15 @@ router.post("/RemoveWishList", AuthVerification, WishListController.RemoveWishLi
 router.get("/WishList", AuthVerification, WishListController.WishList)
 
 // Cart
+router.get("/CartList", AuthVerification, CartListController.CartList)
 router.post("/SaveCartList", AuthVerification, CartListController.SaveCartList)
 router.post("/RemoveCartList", AuthVerification, CartListController.RemoveCartList)
 router.post("/UpdateCartList/:cartId", AuthVerification, CartListController.UpdateCartList)
-router.get("/WishList", AuthVerification, WishListController.WishList)
 
-// Invoice &Payment
+
 router.get("/CreateInvoice", AuthVerification, InvoiceController.CreateInvoice)
+    // Invoice &Payment
+
 
 router.get("/InvoiceList", AuthVerification, InvoiceController.InvoiceList)
 router.get("/InvoiceProductList/:invoice_id", AuthVerification, InvoiceController.InvoiceProductList)

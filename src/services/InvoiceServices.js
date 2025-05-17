@@ -1,154 +1,121 @@
-const mongoose = require("mongoose")
-const CartModel = require('../models/CartModel')
-const ProfileModel = require('../models/ProfileModel')
-const InvoiceModel = require('../models/InvoiceModel')
-const InvoiceProductModel = require('../models/InvoiceProductModel')
-const PaymentSettingsModel = require('../models/PaymentSettingsModel')
+const mongoose = require("mongoose");
+const CartModel = require('../models/CartModel');
+const ProfileModel = require('../models/ProfileModel');
+const InvoiceModel = require('../models/InvoiceModel');
+const InvoiceProductModel = require('../models/InvoiceProductModel');
+const PaymentSettingsModel = require('../models/PaymentSettingsModel');
 const ObjectID = mongoose.Types.ObjectId;
-const FormData = require('form-data');
-const axios = require('axios')
-
+const SSLCommerzPayment = require('sslcommerz-lts');
 
 const CreateInvoiceService = async(req) => {
+    const user_id = new ObjectID(req.headers.user_id);
+    const cus_email = req.headers.email;
 
-    let user_id = new ObjectID(req.header.user_id);
-    let cus_email = req.header.email;
-
-    // 1.Calculate Total Payable & VAT
-
-    let matchStage = { $match: { userId: user_id } }
-    let JoinStageProduct = { $lookup: { from: "products", localField: "productId", foreignField: "_id", as: "product" } }
-    let unwindStage = { $unwind: "$product" }
-
-    let CartProducts = await CartModel.aggregate([
-
-        matchStage,
-        JoinStageProduct,
-        unwindStage
-    ])
+    // 1. Get Cart and Calculate Total
+    const CartProducts = await CartModel.aggregate([
+        { $match: { userId: user_id } },
+        { $lookup: { from: "products", localField: "productId", foreignField: "_id", as: "product" } },
+        { $unwind: "$product" }
+    ]);
 
     let totalAmount = 0;
+    CartProducts.forEach((item) => {
+        const price = item.product.discount ? parseFloat(item.product.discountPrice) : parseFloat(item.product.price);
+        totalAmount += parseFloat(item.qty) * price;
+    });
 
-    CartProducts.forEach((element) => {
+    const vat = totalAmount * 0.05;
+    const payable = totalAmount + vat;
 
-        let price;
+    // 2. Get Customer & Shipping Info
+    const Profile = await ProfileModel.aggregate([{ $match: { userId: user_id } }]);
+    if (!Profile[0]) return { status: "fail", message: "Profile not found" };
 
-        if (element['product']['discount']) {
-            price = parseFloat(element['product']['discountPrice'])
-        } else {
-            price = parseFloat(element['product']['price'])
-        }
+    const tran_id = `INV-${Date.now()}`; // unique
+    const val_id = 0;
+    const delivery_status = 'pending';
+    const payment_status = 'pending';
 
-        totalAmount += parseFloat(element['qty']) * price
-    })
-
-    let vat = totalAmount * 0.05 //5% vat included
-
-    let payable = totalAmount + vat
-
-
-    // 2.Prepare Customer Details &Shipping Details
-
-    let Profile = await ProfileModel.aggregate([matchStage])
-    let cus_details = `Name:${Profile[0]["cus_name"]}, Email:${cus_email}, Address:${Profile[0]["cus_add"]}, Phone:${Profile[0]["cus_phone"]}`
-    let ship_details = `Name:${Profile[0]["ship_name"]}, City:${Profile[0]["ship_city"]}, Address:${Profile[0]["ship_add"]}, Phone:${Profile[0]["ship_phone"]}`
-
-    // 3.Transaction & Other's ID
-
-    let tran_id = Math.floor(10000000 + Math.random() * 90000000)
-    let val_id = 0;
-    let delivery_status = 'pending'
-    let payment_status = `pending`
-
-    // 4.Create Invoice
-
-    let createInvoice = await InvoiceModel.create({
+    // 3. Create Invoice
+    const invoice = await InvoiceModel.create({
         userId: user_id,
-        payable: payable,
-        cus_details: cus_details,
-        ship_details: ship_details,
-        tran_id: tran_id,
-        val_id: val_id,
-        delivery_status: delivery_status,
-        payment_status: payment_status,
+        payable,
+        cus_details: `Name:${Profile[0].cus_name}, Email:${cus_email}, Address:${Profile[0].cus_add}, Phone:${Profile[0].cus_phone}`,
+        ship_details: `Name:${Profile[0].ship_name}, City:${Profile[0].ship_city}, Address:${Profile[0].ship_add}, Phone:${Profile[0].ship_phone}`,
+        tran_id,
+        val_id,
+        delivery_status,
+        payment_status,
         total: totalAmount,
-        vat: vat
+        vat
+    });
 
-    })
+    // 4. Save Invoice Products
+    await Promise.all(CartProducts.map(item => InvoiceProductModel.create({
+        userId: user_id,
+        productId: item.productId,
+        invoiceId: invoice._id,
+        qty: item.qty,
+        color: item.color,
+        size: item.size,
+        price: item.product.discount ? item.product.discountPrice : item.product.price
+    })));
 
-    // 5.Create Invoice Product
+    // 5. Clear Cart
+    await CartModel.deleteMany({ userId: user_id });
 
-    let invoice_id = createInvoice['_id']
+    // 6. Get SSLCommerz credentials
+    const settings = await PaymentSettingsModel.findOne();
+    const sslcz = new SSLCommerzPayment(settings.store_id, settings.store_passwd, false); // false = sandbox
 
-    CartProducts.forEach(async(element) => {
+    const paymentData = {
+        total_amount: payable.toFixed(2),
+        currency: settings.currency,
+        tran_id: tran_id,
+        success_url: `${settings.success_url}/${tran_id}`,
+        fail_url: `${settings.fail_url}/${tran_id}`,
+        cancel_url: `${settings.cancel_url}/${tran_id}`,
+        ipn_url: `${settings.ipn_url}/${tran_id}`,
+        shipping_method: "Courier",
+        product_name: "According Invoice",
+        product_category: "Ecommerce",
+        product_profile: "general",
+        cus_name: Profile[0].cus_name,
+        cus_email: cus_email,
+        cus_add1: Profile[0].cus_add,
+        cus_add2: Profile[0].cus_add,
+        cus_city: Profile[0].cus_city,
+        cus_state: Profile[0].cus_state,
+        cus_postcode: Profile[0].cus_postcode,
+        cus_country: Profile[0].cus_country,
+        cus_phone: Profile[0].cus_phone,
+        cus_fax: Profile[0].cus_phone,
+        ship_name: Profile[0].ship_name,
+        ship_add1: Profile[0].ship_add,
+        ship_add2: Profile[0].ship_add,
+        ship_city: Profile[0].ship_city,
+        ship_state: Profile[0].ship_state,
+        ship_postcode: Profile[0].ship_postcode,
+        ship_country: Profile[0].ship_country
+    };
 
-        await InvoiceProductModel.create({
-            userId: user_id,
-            productId: element['productId'],
-            invoiceId: invoice_id,
-            qty: element['qty'],
-            color: element['color'],
-            price: element['product']['discount'] ? element['product']['discountPrice'] : element['product']['price'],
-            size: element['size']
-        })
-    })
+    const response = await sslcz.init(paymentData);
 
-
-    // 6.Remove Cart
-
-
-    await CartModel.deleteMany({ userId: user_id })
-
-
-    // 7.Prepare SSL Payment
-
-    let PaymentSettings = await PaymentSettingsModel.find()
-
-    const form = new FormData()
-
-    form.append("store_id", PaymentSettings[0]['store_id'])
-    form.append("store_passwd", PaymentSettings[0]['store_passwd'])
-    form.append("total_amount", payable.toString())
-    form.append("currency", PaymentSettings[0]['currency'])
-    form.append("tran_id", tran_id)
-
-    form.append("success_url", `${ PaymentSettings[0]['success_url'] }/${tran_id}`)
-    form.append("fail_url", `${ PaymentSettings[0]['fail_url'] }/${tran_id}`)
-    form.append("cancel_url", `${ PaymentSettings[0]['cancel_url'] }/${tran_id}`)
-    form.append("ipn_url", `${ PaymentSettings[0]['ipn_url'] }/${tran_id}`)
-
-    form.append("cus_name", Profile[0]['cus_name'])
-    form.append("cus_email", cus_email)
-    form.append("cus_add1", Profile[0]['cus_add'])
-    form.append("cus_add2", Profile[0]['cus_add'])
-    form.append("cus_city", Profile[0]['cus_city'])
-    form.append("cus_state", Profile[0]['cus_state'])
-    form.append("cus_postcode", Profile[0]['cus_postcode'])
-    form.append("cus_country", Profile[0]['cus_country'])
-    form.append("cus_phone", Profile[0]['cus_phone'])
-    form.append("cus_fax", Profile[0]['cus_phone'])
-
-    form.append("shipping_method", "YES")
-    form.append("ship_name", Profile[0]['ship_name'])
-    form.append("ship_add1", Profile[0]['ship_add'])
-    form.append("ship_add2", Profile[0]['ship_add'])
-    form.append("ship_city", Profile[0]['ship_city'])
-    form.append("ship_state", Profile[0]['ship_state'])
-    form.append("ship_country", Profile[0]['ship_country'])
-    form.append("ship_postcode", Profile[0]['ship_postcode'])
-
-    form.append("product_name", "According Invoice")
-    form.append("product_category", "According Invoice")
-    form.append("product_profile", "According Invoice")
-    form.append("product_amount", "According Invoice")
-
-    let SSLRes = await axios.post(PaymentSettings[0]['init_url'], form)
-
-    return {
-        status: "success",
-        data: SSLRes.data
+    if (response && response.GatewayPageURL) {
+        {
+            return {
+                status: "success",
+                data: {
+                    GatewayPageURL: response.GatewayPageURL
+                }
+            };
+        }
+    } else {
+        return { status: "fail", message: "SSLCommerz init failed", data: response };
     }
-}
+};
+
+
 
 const PaymentFailService = async(req) => {
     try {

@@ -1,0 +1,39 @@
+[{
+  "_id": {
+    "$oid": "682042f8360579f7530194ed"
+  },
+  "email": "ziadznr311@gmail.com",
+  "createdAt": {
+    "$date": "2025-05-11T06:26:00.192Z"
+  },
+  "otp": "0",
+  "updatedAt": {
+    "$date": "2025-05-12T15:32:02.917Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6820e8a3360579f7530194ee"
+  },
+  "email": "ziad311@gmail.com",
+  "createdAt": {
+    "$date": "2025-05-11T18:12:51.680Z"
+  },
+  "otp": "767397",
+  "updatedAt": {
+    "$date": "2025-05-11T18:12:51.680Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6821f6297ee28974dd4d0f1a"
+  },
+  "email": "ziadznr601@gmail.com",
+  "createdAt": {
+    "$date": "2025-05-12T13:22:49.814Z"
+  },
+  "otp": "0",
+  "updatedAt": {
+    "$date": "2025-05-12T13:49:43.319Z"
+  }
+}]

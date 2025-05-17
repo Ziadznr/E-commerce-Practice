@@ -6,7 +6,7 @@ const Reviews = () => {
     const {ReviewList}=ProductStore()
     return (
         <div>
-            <ul class="list-group mt-4 list-group-flush">
+            <ul className="list-group mt-4 list-group-flush">
                 {
                    ReviewList!==null? (ReviewList.map((item,i)=>{
                       return  <li key={i} className="list-group-item bg-transparent">
