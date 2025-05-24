@@ -1,22 +1,5 @@
 {
-<<<<<<< HEAD
+
     "rootDirectory": "client"
 }
-=======
-    "projects": [{
-        "rootDirectory": "client",
-        "use": "@vercel/static-build",
-        "config": {
-            "distDir": "dist"
-        }
-    }],
-    "builds": [{
-        "src": "client/package.json",
-        "use": "@vercel/static-build"
-    }],
-    "routes": [{
-        "src": "/(.*)",
-        "dest": "/client/$1"
-    }]
-}
->>>>>>> 36d593a724b473322feaea6c43dc8f3de545b887
+
