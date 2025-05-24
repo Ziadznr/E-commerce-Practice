@@ -6,6 +6,9 @@ const CartListController = require("../controllers/CartlistController")
 const InvoiceController = require("../controllers/InvoiceController")
 const FeaturesController = require("../controllers/FeaturesController")
 
+const AdminController = require("../controllers/AdminController");
+const AdminVerification = require("../middlewares/AdminVerification");
+
 const AuthVerification = require("../middlewares/AuthVerification")
 
 const router = express.Router()
@@ -64,4 +67,17 @@ router.get("/LegalDetails/:type", FeaturesController.LegalDetails)
 
 // Create Review
 router.post("/CreateReview", AuthVerification, ProductController.CreateReview)
+
+// Admin Auth Routes
+router.post("/AdminRegister", AdminController.AdminRegister);
+router.post("/AdminLogin", AdminController.AdminLogin);
+router.get("/AdminLogout", AdminController.AdminLogout);
+
+// Admin Product Routes (protected)
+router.get("/ReadProduct", AdminVerification, AdminController.ReadProduct);
+router.get("/product/:productId", AdminVerification, AdminController.DetailsProduct);
+router.post("/CreateProduct", AdminVerification, AdminController.CreateProduct);
+router.put("/UpdateProduct/:productId", AdminVerification, AdminController.UpdateProduct);
+router.delete("/DeleteProduct/:productId", AdminVerification, AdminController.DeleteProduct);
+
 module.exports = router

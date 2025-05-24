@@ -26,14 +26,22 @@ const UserStore = create((set, get) => ({
         }))
     },
     UserLogoutRequest: async() => {
-        set({ isFormSubmit: true })
-        let res = await axios.get('/api/v1/UserLogout', {
-            withCredentials: true // ✅ Required for cookies
+        set({ isFormSubmit: true });
+        const res = await axios.get('/api/v1/UserLogout', {
+            withCredentials: true,
         });
 
-        set({ isFormSubmit: false })
-        return res.data['status'] === "success";
+        set({ isFormSubmit: false });
+
+        if (res.data['status'] === "success") {
+            Cookies.remove("token"); // 👈 Remove token from cookies
+            set({ loginStatus: false }); // 👈 Set loginStatus false
+            return true;
+        }
+
+        return false;
     },
+
 
     OTPFormData: { otp: "" },
 

@@ -10,24 +10,78 @@ const CreateProductService = async(req) => {
     try {
         const productData = req.body;
 
-        // Auto-create brand if not exists
-        const brandExists = await BrandModel.findById(productData.brandId);
-        if (!brandExists) {
-            await new BrandModel({ _id: productData.brandId, name: "Unnamed Brand" }).save();
+        let brandId = productData.brandId;
+        let categoryId = productData.categoryId;
+
+        // Handle Brand
+        if (!brandId && productData.brandName) {
+            // Check if brand exists by name
+            const existingBrand = await BrandModel.findOne({ brandName: productData.brandName });
+            if (existingBrand) {
+                brandId = existingBrand._id;
+            } else {
+                // brandImg is required to create a new brand
+                if (!productData.brandImg) {
+                    return { status: "fail", message: "Brand image (brandImg) is required to create a new brand." };
+                }
+                const newBrand = new BrandModel({
+                    brandName: productData.brandName,
+                    brandImg: productData.brandImg,
+                });
+                const savedBrand = await newBrand.save();
+                brandId = savedBrand._id;
+            }
+        } else if (brandId) {
+            // Optionally, verify brand exists for the given ID
+            const brandExists = await BrandModel.findById(brandId);
+            if (!brandExists) {
+                return { status: "fail", message: "Brand with provided ID does not exist." };
+            }
         }
 
-        // Auto-create category if not exists
-        const categoryExists = await CategoryModel.findById(productData.categoryId);
-        if (!categoryExists) {
-            await new CategoryModel({ _id: productData.categoryId, name: "Unnamed Category" }).save();
+        // Handle Category
+        if (!categoryId && productData.categoryName) {
+            const existingCategory = await CategoryModel.findOne({ categoryName: productData.categoryName });
+            if (existingCategory) {
+                categoryId = existingCategory._id;
+            } else {
+                if (!productData.categoryImg) {
+                    return { status: "fail", message: "Category image (categoryImg) is required to create a new category." };
+                }
+                const newCategory = new CategoryModel({
+                    categoryName: productData.categoryName,
+                    categoryImg: productData.categoryImg,
+                });
+                const savedCategory = await newCategory.save();
+                categoryId = savedCategory._id;
+            }
+        } else if (categoryId) {
+            const categoryExists = await CategoryModel.findById(categoryId);
+            if (!categoryExists) {
+                return { status: "fail", message: "Category with provided ID does not exist." };
+            }
         }
 
-        const product = await ProductModel.create(productData);
+        // Prepare product data with resolved brandId and categoryId
+        const productPayload = {
+            ...productData,
+            brandId,
+            categoryId,
+        };
 
-        if (product && product._id) {
-            const detailsData = req.body.details;
-            detailsData.productId = product._id;
-            await ProductDetailModel.create(detailsData);
+        // Remove brandName, brandImg, categoryName, categoryImg from productPayload
+        delete productPayload.brandName;
+        delete productPayload.brandImg;
+        delete productPayload.categoryName;
+        delete productPayload.categoryImg;
+
+        // Create product
+        const product = await ProductModel.create(productPayload);
+
+        // Create product details if present
+        if (product && product._id && productData.details) {
+            productData.details.productId = product._id;
+            await ProductDetailModel.create(productData.details);
         }
 
         return { status: "success", message: "Product created successfully" };
@@ -36,6 +90,7 @@ const CreateProductService = async(req) => {
         return { status: "fail", message: "Product creation failed", error: error.message };
     }
 };
+
 
 // UPDATE Product
 const UpdateProductService = async(req) => {
@@ -97,10 +152,9 @@ const ListProductService = async() => {
                     price: 1,
                     discount: 1,
                     discountPrice: 1,
-                    stock: 1,
                     remark: 1,
-                    "brand.name": 1,
-                    "category.name": 1
+                    "brand.brandName": 1,
+                    "category.categoryName": 1
                 }
             }
         ]);
@@ -160,7 +214,8 @@ const DetailsService = async(req) => {
             }
         ]);
 
-        return { status: "success", data };
+        return { status: "success", data: data[0] || null };
+
     } catch (error) {
         console.error("DetailsService error:", error);
         return { status: "fail", message: "Something went wrong", error: error.message };

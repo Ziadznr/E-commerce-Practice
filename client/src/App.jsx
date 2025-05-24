@@ -22,6 +22,9 @@ import CartPage from './pages/cart-page';
 import WishPage from './pages/wish-page';
 import OrderPage from './pages/order-page';
 import InvoiceDetails from './components/invoice/invoice-details';
+import AdminLoginPage from './pages/admin-login-registration-page';
+import AdminDashboardPage from './pages/admin-dashboard-page';
+import CreateProductPage from './pages/create-product-page';
 
 const App = () => {
  // call it to get actual status
@@ -59,6 +62,9 @@ const App = () => {
         <Route path="/wish" element={<WishPage/>} />
         <Route path="/invoice/:id" element={<InvoiceDetails />} />
         <Route path="/orders" element={<OrderPage/>} />
+        <Route path="/adminlogin" element={<AdminLoginPage/>} />
+        <Route path="/products" element={<AdminDashboardPage/>} />
+        <Route path="/create" element={<CreateProductPage/>} />
       </Routes>
     </BrowserRouter>
   );

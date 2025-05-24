@@ -170,15 +170,17 @@ const AppNavBar = () => {
                   Order
                 </Link>
               </>
-            ) : (
-              <Link
-                type=" button"
-                className=" btn ms-4 btn-success d-flex"
-                to="/login"
-              >
-                Login
-              </Link> 
-            )}
+            ) : 
+             (
+  <>
+    <Link type="button" className="btn ms-4 btn-success d-flex" to="/login">
+      Login
+    </Link>
+    <Link type="button" className="btn ms-4 btn-success d-flex" to="/adminlogin">
+      Admin
+    </Link>
+  </>
+)}
           </div>
         </div>
       </nav>

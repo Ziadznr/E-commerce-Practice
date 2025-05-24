@@ -30,7 +30,8 @@ const limiter = rateLimit({
 })
 app.use(limiter)
 
-
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // Mongodb Database Connection
 async function connectDB() {

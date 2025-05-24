@@ -4,8 +4,11 @@ const AdminLoginService = require("../services/admin/AdminLoginService");
 const {
     CreateProductService,
     UpdateProductService,
-    DeleteProductService
+    DeleteProductService,
+    ListProductService,
+    DetailsService
 } = require("../services/admin/ProductServices");
+
 
 // Admin Auth Controllers
 exports.AdminRegister = async(req, res) => {
@@ -18,8 +21,10 @@ exports.AdminLogin = async(req, res) => {
 
     if (result.status === "success") {
         const cookieOption = {
-            expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-            httpOnly: false
+            expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: false, // false because you don't use HTTPS locally
+            sameSite: 'lax',
         };
         res.cookie("token", result.token, cookieOption);
     }
@@ -30,14 +35,27 @@ exports.AdminLogin = async(req, res) => {
 exports.AdminLogout = async(req, res) => {
     const cookieOption = {
         expires: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        httpOnly: false
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
     };
 
     res.cookie("token", "", cookieOption);
     return res.status(200).json({ status: "success", message: "Admin logged out" });
 };
 
+
 // Admin Product Controllers
+exports.ReadProduct = async(req, res) => {
+    const result = await ListProductService(req);
+    return res.status(200).json(result);
+};
+
+exports.DetailsProduct = async(req, res) => {
+    const result = await DetailsService(req);
+    return res.status(200).json(result);
+};
+
 exports.CreateProduct = async(req, res) => {
     const result = await CreateProductService(req);
     return res.status(200).json(result);
