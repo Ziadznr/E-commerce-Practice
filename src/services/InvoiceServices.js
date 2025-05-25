@@ -184,26 +184,55 @@ const InvoiceListService = async(req) => {
 }
 
 
+
+
 const InvoiceProductListService = async(req) => {
     try {
+        // Validate ObjectIDs
+        if (!ObjectID.isValid(req.params.invoice_id) || !ObjectID.isValid(req.headers.user_id)) {
+            return { status: "fail", message: "Invalid invoice or user ID" };
+        }
 
-        let user_id = new ObjectID(req.headers.user_id);
-        let invoice_id = new ObjectID(req.params.invoice_id)
+        const user_id = new ObjectID(req.headers.user_id);
+        const invoice_id = new ObjectID(req.params.invoice_id);
 
-        let matchStage = { $match: { userId: user_id, invoiceId: invoice_id } }
-        let JoinStageProduct = { $lookup: { from: "products", localField: "productId", foreignField: "_id", as: "product" } }
-        let unwindStage = { $unwind: "$product" }
+        const matchStage = {
+            $match: {
+                userId: user_id,
+                invoiceId: invoice_id
+            }
+        };
 
-        let products = await InvoiceProductModel.aggregate([
+        const JoinStageProduct = {
+            $lookup: {
+                from: "products",
+                localField: "productId",
+                foreignField: "_id",
+                as: "product"
+            }
+        };
+
+        const unwindStage = {
+            $unwind: "$product"
+        };
+
+        const products = await InvoiceProductModel.aggregate([
             matchStage,
             JoinStageProduct,
             unwindStage
-        ])
-        return { status: "success", data: products }
+        ]);
+
+        if (!products.length) {
+            return { status: "fail", message: "No products found for this invoice" };
+        }
+
+        return { status: "success", data: products };
     } catch (error) {
-        return { status: "fail", message: "Something Went Wrong" }
+        console.error("InvoiceProductListService Error:", error);
+        return { status: "fail", message: "Something went wrong", error: error.message };
     }
-}
+};
+
 
 module.exports = {
     CreateInvoiceService,

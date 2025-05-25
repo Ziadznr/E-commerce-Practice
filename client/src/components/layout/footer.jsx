@@ -1,58 +1,47 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/img/payment.png';
+
 const Footer = () => {
   return (
-    <div className="section-bottom shadow-sm bg-white">
+    <div className="section-bottom shadow-sm bg-white mt-5">
       <div className="container py-5">
-        <div className="row">
+        <div className="row row-cols-1 row-cols-md-3 g-4 text-center text-md-start">
           {/* Column 1 - Legals */}
-          <div className="col-md-4">
-            <h1 className="bodyMedium">Legals</h1>
-            <p className="my-2">
-              <Link className="nav-link" to="/about">About</Link>
-            </p>
-            <p className="my-2">
-              <Link className="nav-link" to="/refund">Refund Policy</Link>
-            </p>
-             <p className="my-2">
-              <Link className="nav-link" to="/privacy">Privacy Policy</Link>
-            </p>
-            <p className="my-2">
-              <Link className="nav-link" to="/terms">Terms</Link>
-            </p>
+          <div>
+            <h5 className="mb-3">Legals</h5>
+            <p><Link className="nav-link p-0" to="/about">About</Link></p>
+            <p><Link className="nav-link p-0" to="/refund">Refund Policy</Link></p>
+            <p><Link className="nav-link p-0" to="/privacy">Privacy Policy</Link></p>
+            <p><Link className="nav-link p-0" to="/terms">Terms</Link></p>
           </div>
 
           {/* Column 2 - Information */}
-          <div className="col-md-4">
-            <h1 className="bodyMedium">Information</h1>
-            <p className="my-2">
-              <Link className="nav-link" to="/how-to-buy">How to buy</Link>
-            </p>
-            <p className="my-2">
-              <Link className="nav-link" to="/contact">Contact</Link>
-            </p>
-            <p className="my-2">
-              <Link className="nav-link" to="/complain">Complain</Link>
-            </p>
+          <div>
+            <h5 className="mb-3">Information</h5>
+            <p><Link className="nav-link p-0" to="/how-to-buy">How to buy</Link></p>
+            <p><Link className="nav-link p-0" to="/contact">Contact</Link></p>
+            <p><Link className="nav-link p-0" to="/complain">Complain</Link></p>
           </div>
 
           {/* Column 3 - About */}
-          <div className="col-md-4">
-            <h1 className="bodyMedium">About</h1>
+          <div>
+            <h5 className="mb-3">About</h5>
             <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry.
             </p>
             <img
-              className="w-75"
+              className="img-fluid w-75 mt-3"
               src={logo}
               alt="Payment Methods"
             />
           </div>
         </div>
+      </div>
 
-        <div className="bg-dark mt-2 py-3 text-center">
-          <p className="text-white bodySmall">All Rights Reserved</p>
+      <div className="bg-dark py-3">
+        <div className="container text-center">
+          <p className="text-white mb-0 small">All Rights Reserved</p>
         </div>
       </div>
     </div>

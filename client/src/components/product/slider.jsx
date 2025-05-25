@@ -10,7 +10,6 @@ const Slider = () => {
     console.log(SliderList);  // Debugging log
   }, [SliderList]);
 
-  // Handle case when SliderList is null or empty
   if (!SliderList || SliderList.length === 0) {
     return <SliderSkeleton />;
   }
@@ -34,7 +33,7 @@ const Slider = () => {
         </div>
 
         {/* Carousel Items */}
-        <div className="carousel-inner py-5">
+        <div className="carousel-inner py-4 py-lg-5">
           {SliderList.map((item, i) => (
             <div
               key={`slide-${i}`}
@@ -42,16 +41,22 @@ const Slider = () => {
               data-bs-interval="10000"
             >
               <div className="container">
-                <div className="row justify-content-center">
-                  <div className="col-12 col-lg-5 col-sm-12 col-md-5 p-5">
+                <div className="row justify-content-center align-items-center">
+                  <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5 text-center text-lg-start">
                     <h1 className="headline-1">{item.title}</h1>
                     <p>{item.des}</p>
-                    <Link to={item.link || '#'} className="btn text-white btn-success px-5">
+                    <Link to={item.link || '#'} className="btn btn-success px-4 px-lg-5 py-2 py-lg-3 text-white">
                       Buy Now
                     </Link>
                   </div>
-                  <div className="col-12 col-lg-5 col-sm-12 col-md-5 p-5">
-                    <img src={item.img} alt={item.title} className="w-100" />
+                  <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5">
+                   <img
+  src={item.img}
+  alt={item.title}
+  className="img-fluid rounded"
+  style={{ maxHeight: '1000px', maxWidth: '100%', objectFit: 'contain' }}
+/>
+
                   </div>
                 </div>
               </div>
@@ -61,20 +66,22 @@ const Slider = () => {
 
         {/* Controls */}
         <button
-          className="carousel-control-prev btn rounded-5"
+          className="carousel-control-prev btn rounded-circle"
           type="button"
           data-bs-target="#carouselExampleDark"
           data-bs-slide="prev"
+          style={{ width: '40px', height: '40px' }}
         >
           <span className="carousel-control-prev-icon" aria-hidden="true"></span>
           <span className="visually-hidden">Previous</span>
         </button>
 
         <button
-          className="carousel-control-next btn"
+          className="carousel-control-next btn rounded-circle"
           type="button"
           data-bs-target="#carouselExampleDark"
           data-bs-slide="next"
+          style={{ width: '40px', height: '40px' }}
         >
           <span className="carousel-control-next-icon" aria-hidden="true"></span>
           <span className="visually-hidden">Next</span>

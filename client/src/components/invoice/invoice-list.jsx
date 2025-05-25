@@ -39,7 +39,14 @@ const InvoiceList = () => {
                                                     <p className=' m-1'><b>Delivery:</b> {item['delivery_status']}</p>
                                                 </div>
                                             </div>
-                                            <Link className=" btn btn-success" to={`/invoice/${item['_id']}`}>Details</Link>
+                                            <Link
+  className="btn btn-success"
+  to={`/invoice/${item['_id']}`}
+  onClick={() => console.log("Going to invoice ID:", item['_id'])}
+>
+  Details
+</Link>
+
                                         </li>
                                     )
                                 })

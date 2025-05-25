@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 const Brands = () => {
   const { BrandList } = ProductStore();
 
-  // Debug or future reactive logic
   useEffect(() => {
     console.log('BrandList:', BrandList);
   }, [BrandList]);
@@ -18,19 +17,19 @@ const Brands = () => {
   return (
     <div className="section">
       <div className="container">
-        <div className="row">
-          <h1 className="headline-4 text-center my-2 p-0">Top Brands</h1>
-          <span className="bodySmall mb-5 text-center">
-            Explore a World of Choices Across Our Most Popular <br />
-            Shopping Categories
-          </span>
+        <h2 className="text-center my-4">Top Brands</h2>
+        <p className="text-center mb-5 small">
+          Explore a World of Choices Across Our Most Popular <br />
+          Shopping Categories
+        </p>
 
+        <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
           {BrandList.map((item, i) => (
-            <div key={i} className="col-6 col-md-4 col-lg-3 p-2 text-center">
-              <Link to={`/by-brand/${item._id}`} className="card h-100 rounded-4 bg-white">
-                <div className="card-body">
-                  <img className="w-75" src={item.brandImg} alt={item.brandName} />
-                  <p className="bodySmall mt-3">{item.brandName}</p>
+            <div key={i} className="col text-center">
+              <Link to={`/by-brand/${item._id}`} className="card h-100 border-0 shadow-sm rounded-4">
+                <div className="card-body d-flex flex-column align-items-center">
+                  <img className="img-fluid w-75" src={item.brandImg} alt={item.brandName} />
+                  <p className="mt-3 mb-0 small">{item.brandName}</p>
                 </div>
               </Link>
             </div>

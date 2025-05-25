@@ -17,19 +17,26 @@ const Categories = () => {
   return (
     <div className="section">
       <div className="container">
-        <div className="row">
-          <h1 className="headline-4 text-center my-2 p-0">Top Categories</h1>
-          <span className="bodySmall mb-5 text-center">
-            Explore a World of Choices Across Our Most Popular <br />
-            Shopping Categories
-          </span>
+        <h2 className="text-center my-4">Top Categories</h2>
+        <p className="text-center mb-5 small">
+          Explore a World of Choices Across Our Most Popular <br />
+          Shopping Categories
+        </p>
 
+        <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
           {CategoryList.map((item, i) => (
-            <div key={i} className="col-lg-3 col-md-4 col-sm-6 p-2">
-              <Link to={`/by-category/${item._id}`} className="card h-100 rounded-3 bg-white text-center">
-                <div className="card-body">
-                  <img alt={item.categoryName} className="w-75" src={item.categoryImg} />
-                  <p className="bodySmall mt-3">{item.categoryName}</p>
+            <div key={i} className="col text-center">
+              <Link
+                to={`/by-category/${item._id}`}
+                className="card h-100 border-0 shadow-sm rounded-3 text-center"
+              >
+                <div className="card-body d-flex flex-column align-items-center">
+                  <img
+                    alt={item.categoryName}
+                    className="img-fluid w-75"
+                    src={item.categoryImg}
+                  />
+                  <p className="mt-3 mb-0 small">{item.categoryName}</p>
                 </div>
               </Link>
             </div>
