@@ -101,7 +101,12 @@ const CartStore = create((set) => ({
                     'Authorization': `Bearer ${Cookies.get('token')}` // If token is in cookies
                 }
             });
-            window.location.href = res.data['data']['GatewayPageURL']
+            if (res.data && res.data['data'] && res.data['data']['GatewayPageURL']) {
+                window.location.href = res.data['data']['GatewayPageURL'];
+            } else {
+                console.error("Invalid response structure:", res.data);
+            }
+
         } catch (error) {
             unauthorized(error.response.status)
         }

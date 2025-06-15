@@ -61,7 +61,7 @@ const CartList = () => {
                             Unit Price: {price}, Qty: {item['qty']}, Size: {item['size']}, Color: {item['color']}
                           </p>
                           <p className="h6 fw-bold m-0 text-dark">
-                            Total <i className="bi bi-currency-dollar"></i>
+                            <b>Total</b>: <i className="bi bi-cash"> </i>
                             {parseInt(price) * parseInt(item['qty'])}
                           </p>
                         </div>
@@ -81,17 +81,17 @@ const CartList = () => {
                 <ul className="list-group bg-transparent list-group-flush">
                   <li className="list-group-item bg-transparent h6 m-0 text-dark">
                     <span className="float-end">
-                      Total: <i className="bi bi-currency-dollar">{CartTotal}</i>
+                      Total: <i className="bi bi-cash">{CartTotal}</i>
                     </span>
                   </li>
                   <li className="list-group-item bg-transparent h6 m-0 text-dark">
                     <span className="float-end">
-                      Vat(5%): <i className="bi bi-currency-dollar">{CartVatTotal}</i>
+                      Vat(5%): <i className="bi bi-cash">{CartVatTotal}</i>
                     </span>
                   </li>
                   <li className="list-group-item bg-transparent h6 m-0 text-dark">
                     <span className="float-end">
-                      Payable: <i className="bi bi-currency-dollar">{CartPayableTotal}</i>
+                      Payable: <i className="bi bi-cash">{CartPayableTotal}</i>
                     </span>
                   </li>
                   <li className="list-group-item bg-transparent h6 m-0 text-dark text-end">

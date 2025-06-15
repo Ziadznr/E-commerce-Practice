@@ -124,12 +124,12 @@ const ProductList = () => {
             ) : (
               ListProduct.map((item) => {
                 let price = (
-                  <p className="bodyMedium text-dark mb-1">Price: ${item.price}</p>
+                  <p className="bodyMedium text-dark mb-1">Price: BDT{item.price}</p>
                 );
                 if (item.discount === true) {
                   price = (
                     <p className="bodyMedium text-dark mb-1">
-                      Price: <strike>${item.price}</strike> ${item.discountPrice}
+                      Price: <strike>BDT{item.price}</strike> BDT{item.discountPrice}
                     </p>
                   );
                 }

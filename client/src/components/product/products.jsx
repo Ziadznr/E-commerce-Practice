@@ -28,10 +28,10 @@ const Products = () => {
         {ListByRemark.map((item) => {
           const price = item.discount ? (
             <p className="bodyMedium text-dark mb-1">
-              Price: <strike>${item.price}</strike> ${item.discountPrice}
+              Price: <strike>BDT{item.price}</strike> BDT{item.discountPrice}
             </p>
           ) : (
-            <p className="bodyMedium text-dark mb-1">Price: ${item.price}</p>
+            <p className="bodyMedium text-dark mb-1">Price: BDT{item.price}</p>
           );
 
           return (
