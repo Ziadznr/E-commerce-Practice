@@ -4,18 +4,24 @@ const ProfileModel = require("../models/ProfileModel")
 const { EncodeToken } = require("../utility/TokenHelper")
 const UserOTPService = async(req) => {
     try {
-        let email = req.params.email
-        let code = Math.floor(100000 + Math.random() * 900000)
-        let EmailText = `Your Verification Code is= ${code}`
-        let EmailSubject = "Email Verification"
+        let email = req.params.email.toLowerCase();
+        let code = (Math.floor(100000 + Math.random() * 900000)).toString();
+        let EmailText = `Your Verification Code is = ${code}`;
+        let EmailSubject = "Email Verification";
 
-        await EmailSend(email, EmailText, EmailSubject)
-        await UserModel.updateOne({ email: email }, { $set: { otp: code } }, { upsert: true })
+        await EmailSend(email, EmailText, EmailSubject);
 
-        return { status: 'success', message: "6 digit OTP has been send" }
+        await UserModel.updateOne(
+            { email },
+            { $set: { otp: code, otpCreatedAt: new Date() } },
+            { upsert: true }
+        );
+
+        return { status: 'success', message: "6 digit OTP has been sent" };
 
     } catch (error) {
-        return { status: 'fail', message: "Something Went Wrong" }
+        console.error("UserOTPService Error:", error);
+        return { status: 'fail', message: "Something Went Wrong" };
     }
 }
 
