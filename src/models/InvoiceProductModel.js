@@ -8,8 +8,6 @@ const DataSchema = mongoose.Schema({
     color: { type: String, required: true },
     price: { type: String, required: true },
     size: { type: String, required: true }
-
-
 }, { timestamps: true, versionKey: false })
 
 const InvoiceProductModel = mongoose.model('invoiceproducts', DataSchema)
