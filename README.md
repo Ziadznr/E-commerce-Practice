@@ -7,4 +7,4 @@ npm run dev:electron
 run via PWA for mobile app:
 serve -s dist
 
-##DB: mongodb+srv://ziadznr311:Ziad%40anas2024@cluster0.zqp87.mongodb.net/
+##DB: mongodb+srv://ziadznr311:*i*d%40*****@cluster0.zqp87.mongodb.net/
