@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../../assets/img/z.jpg';
+import logo from '../../assets/img/z-logo-removebg-preview.png';
 import ProductStore from '../../store/ProductStore';
 import SubmitButton from '../user/UserSubmitButton';
 import UserStore from './../../store/UserStore';
