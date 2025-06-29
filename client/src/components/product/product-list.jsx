@@ -13,13 +13,29 @@ const ProductList = () => {
     CategoryList,
     ListByFilterRequest,
   } = ProductStore();
+  const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5020';
 
-  let [Filter, SetFilter] = useState({
+  const [Filter, SetFilter] = useState({
     brandId: '',
     categoryId: '',
     priceMax: '',
     priceMin: '',
   });
+
+  const getImageUrl = (imgPath) => {
+    if (!imgPath) return 'https://via.placeholder.com/300x300?text=No+Image';
+
+    // If already full URL
+    if (imgPath.startsWith('http')) return imgPath;
+
+    // Clean path (remove leading/trailing slashes and duplicate uploads/)
+    const cleanPath = imgPath
+      .replace(/^\/+/, '')
+      .replace(/^uploads\//, '')
+      .replace(/\/+$/, '');
+
+    return `${baseURL}/uploads/${cleanPath}`;
+  };
 
   const inputOnChange = async (name, value) => {
     SetFilter((data) => ({
@@ -134,20 +150,30 @@ const ProductList = () => {
                   );
                 }
 
+                const imageURL = getImageUrl(item.image);
+                console.log(`Product Image Debug: ${item.title}`, {
+                  original: item.image,
+                  resolved: imageURL
+                });
+
                 return (
-                  <div
-                    key={item._id}
-                    className="col-12 col-sm-6 col-md-4 col-lg-3"
-                  >
+                  <div key={item._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
                     <Link
                       to={`/details/${item._id}`}
                       className="card shadow-sm h-100 border-0 rounded-4 bg-white text-decoration-none"
                     >
                       <img
                         className="w-100 rounded-top-4"
-                        src={item.image}
+                        src={imageURL}
                         alt={item.title}
                         loading="lazy"
+                        onError={(e) => {
+                          console.error('Product image load failed:', {
+                            product: item.title,
+                            attemptedURL: imageURL
+                          });
+                          e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
+                        }}
                       />
                       <div className="card-body">
                         <p className="bodySmal text-secondary mb-1">{item.title}</p>

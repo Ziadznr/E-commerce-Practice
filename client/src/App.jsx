@@ -67,6 +67,7 @@ const App = () => {
         <Route path="/create" element={<CreateProductPage/>} />
       </Routes>
     </BrowserRouter>
+    
   );
 };
 

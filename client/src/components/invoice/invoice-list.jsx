@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import CartStore from '../../store/CartStore';
 import ProductsSkeleton from '../../skeleton/products-skeleton';
 import NoData from './../layout/no-data';

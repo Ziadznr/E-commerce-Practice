@@ -15,6 +15,23 @@ const CartList = () => {
     CartVatTotal,
   } = CartStore();
 
+  const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5020';
+
+  const getImageUrl = (imgPath) => {
+    if (!imgPath) return 'https://via.placeholder.com/300x180?text=No+Image';
+
+    // If already full URL
+    if (imgPath.startsWith('http')) return imgPath;
+
+    // Clean path (remove leading/trailing slashes and duplicate uploads/)
+    const cleanPath = imgPath
+      .replace(/^\/+/, '')
+      .replace(/^uploads\//, '')
+      .replace(/\/+$/, '');
+
+    return `${baseURL}/uploads/${cleanPath}`;
+  };
+
   useEffect(() => {
     (async () => {
       await CartListRequest();
@@ -43,6 +60,12 @@ const CartList = () => {
                     price = item['product']['discountPrice'];
                   }
 
+                  const imageURL = getImageUrl(item['product']['image']);
+                  console.log(`Cart Image Debug: ${item['product']['title']}`, {
+                    original: item['product']['image'],
+                    resolved: imageURL
+                  });
+
                   return (
                     <li
                       key={item['_id']}
@@ -52,8 +75,18 @@ const CartList = () => {
                         <img
                           className="rounded-1 me-3 mb-2 mb-md-0"
                           width="90"
-                          src={item['product']['image']}
-                          alt=""
+                          height="90"
+                          src={imageURL}
+                          alt={item['product']['title']}
+                          style={{ objectFit: 'cover' }}
+                          loading="lazy"
+                          onError={(e) => {
+                            console.error('Cart image load failed:', {
+                              product: item['product']['title'],
+                              attemptedURL: imageURL
+                            });
+                            e.target.src = 'https://via.placeholder.com/90x90?text=No+Image';
+                          }}
                         />
                         <div>
                           <p className="fw-lighter m-0">{item['product']['title']}</p>

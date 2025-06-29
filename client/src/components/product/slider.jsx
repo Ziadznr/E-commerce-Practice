@@ -1,18 +1,28 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ProductStore from '../../store/ProductStore';
 import SliderSkeleton from '../../skeleton/slider-skeleton';
 import { Link } from 'react-router-dom';
 
 const Slider = () => {
   const { SliderList } = ProductStore();
+  const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5020';
 
-  useEffect(() => {
-    console.log(SliderList);  // Debugging log
-  }, [SliderList]);
+  if (!SliderList?.length) return <SliderSkeleton />;
 
-  if (!SliderList || SliderList.length === 0) {
-    return <SliderSkeleton />;
-  }
+  const getImageUrl = (imgPath) => {
+    if (!imgPath) return 'https://via.placeholder.com/1500x500?text=No+Image';
+
+    // If already full URL
+    if (imgPath.startsWith('http')) return imgPath;
+
+    // Clean path (remove leading/trailing slashes and duplicate uploads/)
+    const cleanPath = imgPath
+      .replace(/^\/+/, '')
+      .replace(/^uploads\//, '')
+      .replace(/\/+$/, '');
+
+    return `${baseURL}/uploads/${cleanPath}`;
+  };
 
   return (
     <div>
@@ -34,34 +44,50 @@ const Slider = () => {
 
         {/* Carousel Items */}
         <div className="carousel-inner py-4 py-lg-5">
-          {SliderList.map((item, i) => (
-            <div
-              key={`slide-${i}`}
-              className={`carousel-item${i === 0 ? ' active' : ''}`}
-              data-bs-interval="10000"
-            >
-              <div className="container">
-                <div className="row justify-content-center align-items-center">
-                  <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5 text-center text-lg-start">
-                    <h1 className="headline-1">{item.title}</h1>
-                    <p>{item.des}</p>
-                    <Link to={item.link || '#'} className="btn btn-success px-4 px-lg-5 py-2 py-lg-3 text-white">
-                      Buy Now
-                    </Link>
-                  </div>
-                  <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5">
-                   <img
-  src={item.img}
-  alt={item.title}
-  className="img-fluid rounded"
-  style={{ maxHeight: '1000px', maxWidth: '100%', objectFit: 'contain' }}
-/>
+          {SliderList.map((item, i) => {
+            const imageURL = getImageUrl(item.img);
+            console.log(`Slider Image Debug: ${item.title}`, {
+              original: item.img,
+              resolved: imageURL
+            });
 
+            return (
+              <div
+                key={`slide-${i}`}
+                className={`carousel-item${i === 0 ? ' active' : ''}`}
+                data-bs-interval="10000"
+              >
+                <div className="container">
+                  <div className="row justify-content-center align-items-center">
+                    <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5 text-center text-lg-start">
+                      <h1 className="headline-1">{item.title}</h1>
+                      <p>{item.des}</p>
+                      <Link to={item.link || '#'} className="btn btn-success px-4 px-lg-5 py-2 py-lg-3 text-white">
+                        Buy Now
+                      </Link>
+                    </div>
+                    <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5">
+                      <img
+                        src={imageURL}
+                        alt={item.title}
+                        className="img-fluid rounded"
+                        style={{ maxHeight: '1000px', maxWidth: '100%', objectFit: 'contain' }}
+                        loading="lazy"
+                        onError={(e) => {
+                          console.error('Slider image load failed:', {
+                            slide: item.title,
+                            attemptedURL: imageURL,
+                            baseURL: baseURL
+                          });
+                          e.target.src = 'https://via.placeholder.com/1500x500?text=No+Image';
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Controls */}

@@ -60,13 +60,22 @@ connectDB();
 
 // Custom headers for /uploads
 app.use('/uploads', (req, res, next) => {
-    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    res.setHeader('Content-Security-Policy', "default-src 'self'; img-src 'self' http://localhost:5173 data:;");
-    next();
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+
+  // Allow images from any origin (safe for public images like category icons)
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src *; img-src * data: blob:;"
+  );
+
+  next();
 });
 
 // Serve uploaded static files
 app.use('/uploads', cors(staticCorsOptions), express.static(path.join(__dirname, 'uploads')));
+// Serve uploaded static files from root (no /uploads prefix)
+// Serve files directly from root
+
 
 // Routing
 app.use('/api/v1', router);
