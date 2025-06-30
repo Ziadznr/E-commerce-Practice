@@ -11,17 +11,10 @@ const Slider = () => {
 
   const getImageUrl = (imgPath) => {
     if (!imgPath) return 'https://via.placeholder.com/1500x500?text=No+Image';
-
-    // If already full URL
     if (imgPath.startsWith('http')) return imgPath;
 
-    // Clean path (remove leading/trailing slashes and duplicate uploads/)
-    const cleanPath = imgPath
-      .replace(/^\/+/, '')
-      .replace(/^uploads\//, '')
-      .replace(/\/+$/, '');
-
-    return `${baseURL}/uploads/${cleanPath}`;
+    const cleanPath = imgPath.replace(/^\/+/, '');
+    return `${baseURL}/${cleanPath}`;
   };
 
   return (
@@ -46,10 +39,6 @@ const Slider = () => {
         <div className="carousel-inner py-4 py-lg-5">
           {SliderList.map((item, i) => {
             const imageURL = getImageUrl(item.img);
-            console.log(`Slider Image Debug: ${item.title}`, {
-              original: item.img,
-              resolved: imageURL
-            });
 
             return (
               <div
@@ -59,25 +48,35 @@ const Slider = () => {
               >
                 <div className="container">
                   <div className="row justify-content-center align-items-center">
+                    {/* Text */}
                     <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5 text-center text-lg-start">
                       <h1 className="headline-1">{item.title}</h1>
                       <p>{item.des}</p>
-                      <Link to={item.link || '#'} className="btn btn-success px-4 px-lg-5 py-2 py-lg-3 text-white">
+                      <Link
+                        to={item.link || '#'}
+                        className="btn btn-success px-4 px-lg-5 py-2 py-lg-3 text-white"
+                      >
                         Buy Now
                       </Link>
                     </div>
+
+                    {/* Image */}
                     <div className="col-12 col-md-6 col-lg-5 p-3 p-lg-5">
                       <img
                         src={imageURL}
                         alt={item.title}
                         className="img-fluid rounded"
-                        style={{ maxHeight: '1000px', maxWidth: '100%', objectFit: 'contain' }}
+                        style={{
+                          maxHeight: '1000px',
+                          maxWidth: '100%',
+                          objectFit: 'contain',
+                        }}
                         loading="lazy"
                         onError={(e) => {
                           console.error('Slider image load failed:', {
                             slide: item.title,
                             attemptedURL: imageURL,
-                            baseURL: baseURL
+                            baseURL: baseURL,
                           });
                           e.target.src = 'https://via.placeholder.com/1500x500?text=No+Image';
                         }}

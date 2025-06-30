@@ -11,10 +11,8 @@ const Features = () => {
   const getImageUrl = (imgPath) => {
     if (!imgPath) return 'https://via.placeholder.com/100?text=No+Image';
 
-    // If already full URL
     if (imgPath.startsWith('http')) return imgPath;
 
-    // Clean path (remove leading/trailing slashes and duplicate uploads/)
     const cleanPath = imgPath
       .replace(/^\/+/, '')
       .replace(/^uploads\//, '')
@@ -30,7 +28,7 @@ const Features = () => {
           const imageURL = getImageUrl(item.img);
           console.log(`Feature Image Debug: ${item.name}`, {
             original: item.img,
-            resolved: imageURL
+            resolved: imageURL,
           });
 
           return (
@@ -46,7 +44,7 @@ const Features = () => {
                       onError={(e) => {
                         console.error('Feature image load failed:', {
                           feature: item.name,
-                          attemptedURL: imageURL
+                          attemptedURL: imageURL,
                         });
                         e.target.src = 'https://via.placeholder.com/100?text=No+Image';
                       }}

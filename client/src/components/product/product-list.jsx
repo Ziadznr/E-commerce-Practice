@@ -13,6 +13,7 @@ const ProductList = () => {
     CategoryList,
     ListByFilterRequest,
   } = ProductStore();
+
   const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5020';
 
   const [Filter, SetFilter] = useState({
@@ -25,19 +26,16 @@ const ProductList = () => {
   const getImageUrl = (imgPath) => {
     if (!imgPath) return 'https://via.placeholder.com/300x300?text=No+Image';
 
-    // If already full URL
+    // If full URL, return as-is
     if (imgPath.startsWith('http')) return imgPath;
 
-    // Clean path (remove leading/trailing slashes and duplicate uploads/)
-    const cleanPath = imgPath
-      .replace(/^\/+/, '')
-      .replace(/^uploads\//, '')
-      .replace(/\/+$/, '');
+    // Normalize: remove leading slash only
+    const cleanPath = imgPath.replace(/^\/+/, '');
 
-    return `${baseURL}/uploads/${cleanPath}`;
+    return `${baseURL}/${cleanPath}`;
   };
 
-  const inputOnChange = async (name, value) => {
+  const inputOnChange = (name, value) => {
     SetFilter((data) => ({
       ...data,
       [name]: value,
@@ -52,7 +50,9 @@ const ProductList = () => {
       const isEveryFilterPropertyEmpty = Object.values(Filter).every(
         (value) => value === '' || value === 0
       );
-      if (!isEveryFilterPropertyEmpty) await ListByFilterRequest(Filter);
+      if (!isEveryFilterPropertyEmpty) {
+        await ListByFilterRequest(Filter);
+      }
     })();
   }, [Filter]);
 
@@ -65,37 +65,29 @@ const ProductList = () => {
             <label className="form-label mt-3">Brands</label>
             <select
               value={Filter.brandId}
-              onChange={async (e) => {
-                await inputOnChange('brandId', e.target.value);
-              }}
+              onChange={(e) => inputOnChange('brandId', e.target.value)}
               className="form-select"
             >
               <option value="">Choose Brand</option>
-              {BrandList !== null
-                ? BrandList.map((item) => (
-                    <option key={item._id} value={item._id}>
-                      {item.brandName}
-                    </option>
-                  ))
-                : null}
+              {BrandList?.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.brandName}
+                </option>
+              ))}
             </select>
 
             <label className="form-label mt-3">Categories</label>
             <select
               value={Filter.categoryId}
-              onChange={async (e) => {
-                await inputOnChange('categoryId', e.target.value);
-              }}
+              onChange={(e) => inputOnChange('categoryId', e.target.value)}
               className="form-select"
             >
               <option value="">Choose Category</option>
-              {CategoryList !== null
-                ? CategoryList.map((item) => (
-                    <option key={item._id} value={item._id}>
-                      {item.categoryName}
-                    </option>
-                  ))
-                : null}
+              {CategoryList?.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.categoryName}
+                </option>
+              ))}
             </select>
 
             <label className="form-label mt-3">
@@ -103,9 +95,7 @@ const ProductList = () => {
             </label>
             <input
               value={Filter.priceMax}
-              onChange={async (e) => {
-                await inputOnChange('priceMax', e.target.value);
-              }}
+              onChange={(e) => inputOnChange('priceMax', e.target.value)}
               min={0}
               max={100000}
               step={1000}
@@ -118,9 +108,7 @@ const ProductList = () => {
             </label>
             <input
               value={Filter.priceMin}
-              onChange={async (e) => {
-                await inputOnChange('priceMin', e.target.value);
-              }}
+              onChange={(e) => inputOnChange('priceMin', e.target.value)}
               min={0}
               max={100000}
               step={1000}
@@ -139,22 +127,15 @@ const ProductList = () => {
               <p className="text-center">No products found matching filters.</p>
             ) : (
               ListProduct.map((item) => {
-                let price = (
+                const imageURL = getImageUrl(item.image);
+
+                const price = item.discount ? (
+                  <p className="bodyMedium text-dark mb-1">
+                    Price: <strike>BDT{item.price}</strike> BDT{item.discountPrice}
+                  </p>
+                ) : (
                   <p className="bodyMedium text-dark mb-1">Price: BDT{item.price}</p>
                 );
-                if (item.discount === true) {
-                  price = (
-                    <p className="bodyMedium text-dark mb-1">
-                      Price: <strike>BDT{item.price}</strike> BDT{item.discountPrice}
-                    </p>
-                  );
-                }
-
-                const imageURL = getImageUrl(item.image);
-                console.log(`Product Image Debug: ${item.title}`, {
-                  original: item.image,
-                  resolved: imageURL
-                });
 
                 return (
                   <div key={item._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
@@ -170,7 +151,7 @@ const ProductList = () => {
                         onError={(e) => {
                           console.error('Product image load failed:', {
                             product: item.title,
-                            attemptedURL: imageURL
+                            attemptedURL: imageURL,
                           });
                           e.target.src = 'https://via.placeholder.com/300x300?text=No+Image';
                         }}

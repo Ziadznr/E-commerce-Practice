@@ -12,30 +12,24 @@ const Categories = () => {
   const getImageUrl = (imgPath) => {
     if (!imgPath) return 'https://via.placeholder.com/150?text=No+Image';
 
-    // If already full URL
+    // If already a full URL
     if (imgPath.startsWith('http')) return imgPath;
 
-    // Clean path (remove leading/trailing slashes and duplicate uploads/)
-    const cleanPath = imgPath
-      .replace(/^\/+/, '')
-      .replace(/^uploads\//, '')
-      .replace(/\/+$/, '');
+    // Normalize path: remove leading slash only
+    const cleanPath = imgPath.replace(/^\/+/, '');
 
-    return `${baseURL}/uploads/${cleanPath}`;
+    // Build the full image URL
+    return `${baseURL}/${cleanPath}`;
   };
 
   return (
     <div className="section">
       <div className="container">
         <h2 className="text-center my-4">Top Categories</h2>
-        
+
         <div className="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
           {CategoryList.map((item) => {
             const imageURL = getImageUrl(item.categoryImg);
-            console.log(`Image Debug: ${item.categoryName}`, {
-              original: item.categoryImg,
-              resolved: imageURL
-            });
 
             return (
               <div key={item._id} className="col text-center">
@@ -48,12 +42,12 @@ const Categories = () => {
                       alt={item.categoryName}
                       className="img-fluid w-75"
                       src={imageURL}
+                      loading="lazy"
                       onError={(e) => {
-                        console.error('Image load failed:', {
-                          item: item.categoryName,
+                        console.error('Category image load failed:', {
+                          category: item.categoryName,
                           attemptedURL: imageURL,
-                          baseURL: baseURL,
-                          env: import.meta.env.MODE
+                          baseURL,
                         });
                         e.target.src = 'https://via.placeholder.com/150?text=No+Image';
                       }}

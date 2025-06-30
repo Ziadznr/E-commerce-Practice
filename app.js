@@ -73,8 +73,6 @@ app.use('/uploads', (req, res, next) => {
 
 // Serve uploaded static files
 app.use('/uploads', cors(staticCorsOptions), express.static(path.join(__dirname, 'uploads')));
-// Serve uploaded static files from root (no /uploads prefix)
-// Serve files directly from root
 
 
 // Routing

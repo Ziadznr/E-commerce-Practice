@@ -17,17 +17,10 @@ const Products = () => {
 
   const getImageUrl = (imgPath) => {
     if (!imgPath) return 'https://via.placeholder.com/300x300?text=No+Image';
-
-    // If already full URL
     if (imgPath.startsWith('http')) return imgPath;
 
-    // Clean path (remove leading/trailing slashes and duplicate uploads/)
-    const cleanPath = imgPath
-      .replace(/^\/+/, '')
-      .replace(/^uploads\//, '')
-      .replace(/\/+$/, '');
-
-    return `${baseURL}/uploads/${cleanPath}`;
+    const cleanPath = imgPath.replace(/^\/+/, '');
+    return `${baseURL}/${cleanPath}`;
   };
 
   const renderProductCards = () => {
@@ -42,6 +35,8 @@ const Products = () => {
     return (
       <div className="row g-3">
         {ListByRemark.map((item) => {
+          const imageURL = getImageUrl(item.image);
+
           const price = item.discount ? (
             <p className="bodyMedium text-dark mb-1">
               Price: <strike>BDT{item.price}</strike> BDT{item.discountPrice}
@@ -49,12 +44,6 @@ const Products = () => {
           ) : (
             <p className="bodyMedium text-dark mb-1">Price: BDT{item.price}</p>
           );
-
-          const imageURL = getImageUrl(item.image);
-          console.log(`Product Image Debug: ${item.title}`, {
-            original: item.image,
-            resolved: imageURL
-          });
 
           return (
             <div key={item._id} className="col-12 col-sm-6 col-md-4 col-lg-3">
@@ -102,12 +91,9 @@ const Products = () => {
           <span className="bodySmal mb-4 d-block">
             Explore a World of Choices Across Our Most Popular
           </span>
+
           <div className="col-12">
-            <ul
-              className="nav nav-pills justify-content-center mb-4 gap-2"
-              id="pills-tab"
-              role="tablist"
-            >
+            <ul className="nav nav-pills justify-content-center mb-4 gap-2">
               {tabs.map((tabName) => (
                 <li className="nav-item" key={tabName} role="presentation">
                   <button
