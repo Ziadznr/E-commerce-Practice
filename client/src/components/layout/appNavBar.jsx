@@ -6,9 +6,12 @@ import UserStore from './../../store/UserStore';
 import CartStore from '../../store/CartStore';
 import { useEffect } from 'react';
 import WishStore from '../../store/WishStore';
+import { useTranslation } from 'react-i18next';
 
 const AppNavBar = () => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
   const { SetSearchKeyword, SearchKeyword } = ProductStore();
   const { isLogin, UserLogoutRequest } = UserStore();
   const { CartCount, CartListRequest } = CartStore();
@@ -27,6 +30,11 @@ const AppNavBar = () => {
     } else {
       navigate('/');
     }
+  };
+
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === 'en' ? 'bn' : 'en';
+    i18n.changeLanguage(nextLang);
   };
 
   useEffect(() => {
@@ -89,9 +97,8 @@ const AppNavBar = () => {
               <li className="nav-item me-4">
                 <Link className="nav-link h5" to="/">
                   <button type="button" className="btn btn-success">
-  <i className="bi bi-house"></i> Home
-</button>
-
+                    <i className="bi bi-house"></i> {t('home')}
+                  </button>
                 </Link>
               </li>
             </ul>
@@ -103,7 +110,7 @@ const AppNavBar = () => {
                   value={SearchKeyword}
                   onChange={(e) => SetSearchKeyword(e.target.value)}
                   className="form-control"
-                  placeholder="Search Here"
+                  placeholder={t('search_here')}
                   type="search"
                 />
                 <button onClick={handleSearch} className="btn btn-outline-dark">
@@ -111,54 +118,64 @@ const AppNavBar = () => {
                 </button>
               </div>
 
+              {/* Language Toggle */}
+              <button className="btn btn-warning" onClick={toggleLanguage}>
+                🌐 {i18n.language === 'en' ? 'বাংলা' : 'English'}
+              </button>
+
               {/* Cart */}
-              <Link to="/cart" className=" m-2 btn btn-light position-relative">
+              <Link to="/cart" className="m-2 btn btn-light position-relative">
                 <i className="bi text-dark bi-bag"></i>
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
                   {CartCount}
-                  <span className="visually-hidden">unread messages</span>
                 </span>
               </Link>
 
               {/* Wishlist */}
-              <Link to="/wish" className=" m-2 btn btn-light position-relative">
+              <Link to="/wish" className="m-2 btn btn-light position-relative">
                 <i className="bi text-dark bi-heart"></i>
                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning">
                   {WishCount}
-                  <span className="visually-hidden">unread messages</span>
                 </span>
               </Link>
 
               {/* Auth Buttons */}
               {isLogin() ? (
                 <>
-                 <SubmitButton
-  onClick={onLogout}
-  text={
-    <>
-      <i className="bi bi-box-arrow-right me-2"></i> Logout
-    </>
-  }
-  className="btn btn-success"
-/>
-
+                  <SubmitButton
+                    onClick={onLogout}
+                    text={
+                      <>
+                        <i className="bi bi-box-arrow-right me-2"></i> {t('logout')}
+                      </>
+                    }
+                    className="btn btn-success"
+                  />
                   <Link to="/profile" className="btn btn-success">
-                    <i className="bi bi-person-circle"></i> Profile
+                    <i className="bi bi-person-circle"></i> {t('profile')}
                   </Link>
                   <Link to="/orders" className="btn btn-success">
-                    
-  <i className="bi bi-cart"></i> Place Order
-
-
+                    <i className="bi bi-cart"></i> {t('place_order')}
                   </Link>
                 </>
               ) : (
                 <>
                   <Link to="/login" className="btn btn-success">
-                    <i class="bi bi-door-open"></i>Login
+                    <i className="bi bi-door-open"></i> {t('login')}
                   </Link>
                   <Link to="/adminlogin" className="btn btn-success">
-                    <h6><i className="bi bi-person-gear me-1"></i> Admin Panel</h6>
+                    <h6>
+                      <i className="bi bi-person-gear me-1"></i> {t('admin_panel')}
+                    </h6>
+                  </Link>
+                  <Link
+                    to="/downloads/AppInstaller.exe"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-primary"
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    <i className="bi bi-download me-2"></i> {t('download_app')}
                   </Link>
                 </>
               )}

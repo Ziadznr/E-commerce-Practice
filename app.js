@@ -75,6 +75,8 @@ app.use('/uploads', (req, res, next) => {
 app.use('/uploads', cors(staticCorsOptions), express.static(path.join(__dirname, 'uploads')));
 
 
+
+
 // Routing
 app.use('/api/v1', router);
 

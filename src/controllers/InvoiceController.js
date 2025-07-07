@@ -11,7 +11,7 @@ const {
 } = require("../services/InvoiceServices");
 
 // Default to localhost if not defined
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const FRONTEND_URL ="http://localhost:5173";
 
 exports.CreateInvoice = async (req, res) => {
   let result = await CreateInvoiceService(req);

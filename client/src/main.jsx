@@ -6,6 +6,7 @@ import './assets/css/style.css';
 import './assets/css/animate.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'react-loading-skeleton/dist/skeleton.css';
+import './i18n';
 
 import App from './App.jsx';
 
