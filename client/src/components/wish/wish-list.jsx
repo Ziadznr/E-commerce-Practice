@@ -48,10 +48,10 @@ const WishList = () => {
         {WishList.map((item) => {
           const price = item.product.discount ? (
             <p className="bodyMedium text-dark my-1">
-              Price: <strike>BDT{item.product.price}</strike> BDT{item.product.discountPrice}
+              Price: <strike>BDT{item.product.price}</strike> BDT {item.product.discountPrice}
             </p>
           ) : (
-            <p className="bodyMedium text-dark my-1">Price: BDT{item.product.price}</p>
+            <p className="bodyMedium text-dark my-1">Price: BDT {item.product.price}</p>
           );
 
           const imageURL = getImageUrl(item.product.image);

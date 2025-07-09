@@ -168,15 +168,6 @@ const AppNavBar = () => {
                       <i className="bi bi-person-gear me-1"></i> {t('admin_panel')}
                     </h6>
                   </Link>
-                  <Link
-                    to="/downloads/AppInstaller.exe"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-primary"
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    <i className="bi bi-download me-2"></i> {t('download_app')}
-                  </Link>
                 </>
               )}
             </div>
