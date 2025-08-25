@@ -1,0 +1,17 @@
+directories:
+  output: dist-electron
+  buildResources: build
+appId: com.desktopapp.desktop
+productName: MyMernApp
+files:
+  - filter:
+      - dist/**/*
+      - electron/**/*
+      - package.json
+win:
+  target:
+    - nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+electronVersion: 36.8.1

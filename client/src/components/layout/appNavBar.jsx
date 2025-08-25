@@ -1,11 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../../assets/img/z-logo-removebg-preview.png';
+import logo from "../../assets/img/OIP.png";
 import ProductStore from '../../store/ProductStore';
 import SubmitButton from '../user/UserSubmitButton';
 import UserStore from './../../store/UserStore';
 import CartStore from '../../store/CartStore';
-import { useEffect } from 'react';
 import WishStore from '../../store/WishStore';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const AppNavBar = () => {
@@ -48,47 +48,31 @@ const AppNavBar = () => {
 
   return (
     <>
+      {/* Header top */}
       <div className="container-fluid text-white p-2 bg-success">
         <div className="container">
           <div className="row justify-content-between align-items-center">
             <div className="col-12 col-md-auto text-center text-md-start mb-2 mb-md-0">
-              <small>
-                <i className="bi bi-envelope"></i> ziadznr311@gmail.com
-              </small>
-              <small className="ms-3">
-                <i className="bi bi-telephone"></i> 01704667725
-              </small>
+              <small><i className="bi bi-envelope"></i> rakib18@cse.pstu.ac.bd</small>
+              <small className="ms-3"><i className="bi bi-telephone"></i> 01756193659</small>
             </div>
             <div className="col-auto text-center text-md-end">
-              <span className="mx-2">
-                <i className="bi bi-whatsapp"></i>
-              </span>
-              <span className="mx-2">
-                <i className="bi bi-facebook"></i>
-              </span>
-              <span className="mx-2">
-                <i className="bi bi-youtube"></i>
-              </span>
+              <span className="mx-2"><i className="bi bi-whatsapp"></i></span>
+              <span className="mx-2"><i className="bi bi-facebook"></i></span>
+              <span className="mx-2"><i className="bi bi-youtube"></i></span>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light bg-white sticky-top py-3">
         <div className="container">
           <Link className="navbar-brand" to="/">
             <img src={logo} alt="Logo" className="img-fluid" width="96px" />
           </Link>
 
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#nav06"
-            aria-controls="nav06"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
+          <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav06" aria-controls="nav06" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
 

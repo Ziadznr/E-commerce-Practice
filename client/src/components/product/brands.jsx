@@ -12,13 +12,20 @@ const Brands = () => {
   const getImageUrl = (imgPath) => {
     if (!imgPath) return 'https://via.placeholder.com/150?text=No+Image';
 
-    // If full URL, return as-is
+    // ✅ Handle base64 images
+    if (imgPath.startsWith('data:image')) {
+      return imgPath;
+    }
+    if (/^[A-Za-z0-9+/=]+$/.test(imgPath)) {
+      // Looks like raw base64 (without "data:image/...;base64,")
+      return `data:image/png;base64,${imgPath}`;
+    }
+
+    // ✅ If it's already a full URL
     if (imgPath.startsWith('http')) return imgPath;
 
-    // Normalize: remove leading slashes only
+    // ✅ Otherwise, treat it as a relative path from backend
     const cleanPath = imgPath.replace(/^\/+/, '');
-
-    // Serve from backend uploads directory
     return `${baseURL}/${cleanPath}`;
   };
 
@@ -53,7 +60,8 @@ const Brands = () => {
                           attemptedURL: imageURL,
                           baseURL,
                         });
-                        e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                        e.target.src =
+                          'https://via.placeholder.com/150?text=No+Image';
                       }}
                     />
                     <p className="mt-3 mb-0 small">{item.brandName}</p>

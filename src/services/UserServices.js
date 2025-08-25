@@ -5,7 +5,7 @@ const { EncodeToken } = require("../utility/TokenHelper")
 const UserOTPService = async(req) => {
     try {
         let email = req.params.email.toLowerCase();
-        let code = (Math.floor(100000 + Math.random() * 900000)).toString();
+        let code = (Math.floor(1000 + Math.random() * 9000)).toString();
         let EmailText = `Your Verification Code is = ${code}`;
         let EmailSubject = "Email Verification";
 
